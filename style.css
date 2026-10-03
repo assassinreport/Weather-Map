@@ -1,0 +1,553 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #111;
+    overflow: hidden;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.windy-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 320px;
+    max-height: calc(100vh - 60px);
+    background: rgba(26, 30, 38, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    color: #f3f4f6;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.windy-panel::-webkit-scrollbar {
+    width: 6px;
+}
+.windy-panel::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+.panel-header h3 {
+    margin: 0;
+    padding: 16px 16px 10px 16px;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: #ffda44;
+}
+
+.search-section {
+    padding: 0 16px 12px 16px;
+}
+
+.search-box {
+    display: flex;
+    gap: 6px;
+}
+
+.search-box input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #fff;
+    font-size: 13px;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #ffda44;
+}
+
+.search-box button {
+    background: #ffda44;
+    border: none;
+    color: #111;
+    font-weight: 600;
+    padding: 0 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+#search-error {
+    color: #ff5252;
+    font-size: 11px;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 0;
+}
+
+/* Accordion Component Flex Split Box Setup */
+.main-trigger-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    padding-right: 16px;
+}
+
+.main-trigger {
+    flex: 1;
+    background: transparent;
+    border: none;
+    margin: 0;
+    padding: 14px 16px;
+    color: #fff;
+    text-align: left;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.main-trigger:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.chevron, .sub-chevron {
+    font-size: 10px;
+    transition: transform 0.2s ease;
+    color: #888;
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.sub-accordion {
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.sub-accordion-header {
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.sub-header-left {
+    display: flex;
+    align-items: center;
+}
+
+.sub-accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.slider-wrapper {
+    padding: 12px 16px;
+}
+
+.slider-wrapper label {
+    display: block;
+    font-size: 12px;
+    color: #ccc;
+    margin-bottom: 4px;
+    margin-top: 6px;
+}
+
+.slider-wrapper label span {
+    font-weight: bold;
+    color: #ffda44;
+}
+
+.slider-wrapper input[type="range"] {
+    width: 100%;
+    margin-bottom: 12px;
+    accent-color: #ffda44;
+}
+
+/* Active Expansion Toggles */
+.accordion-item.active > .accordion-content {
+    max-height: 600px; 
+}
+.accordion-item.active .chevron {
+    transform: rotate(180deg);
+}
+
+.sub-accordion.active .sub-accordion-content {
+    max-height: 250px;
+}
+.sub-accordion.active .sub-chevron {
+    transform: rotate(180deg);
+}
+
+/* Custom Checkbox Elements */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.toggle-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    height: 16px;
+    width: 16px;
+    background-color: #252b36;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+}
+
+.sub-accordion-header .checkmark,
+.main-trigger-wrapper .checkmark {
+    margin-right: 8px;
+}
+
+.master-toggle ~ .checkmark {
+    margin-right: 0;
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.toggle-container:hover input ~ .checkmark {
+    border-color: #ffda44;
+}
+
+.toggle-container input:checked ~ .checkmark {
+    background-color: #ffda44;
+    border-color: #ffda44;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid #111;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.toggle-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.toggle-container input:focus-visible ~ .checkmark {
+    outline: 2px solid #ffda44;
+    outline-offset: 2px;
+}
+
+.main-trigger:focus-visible,
+.search-box button:focus-visible {
+    outline: 2px solid #ffda44;
+    outline-offset: -2px;
+}
+
+.layer-title {
+    color: #e5e7eb;
+}
+
+.sub-header-left:has(.sub-toggle:not(:checked)) .layer-title {
+    color: #6b7280;
+    text-decoration: line-through;
+}
+
+/* Visual state treatment for an entire disabled section block */
+.disabled-opacity {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* Same dimmed look as .disabled-opacity, but stays clickable — used when
+   every individual sub-toggle is off but the master toggle is still on,
+   so the section can be re-enabled one item at a time. */
+.dimmed-opacity {
+    opacity: 0.4;
+}
+
+@media (max-width: 400px) {
+    .windy-panel {
+        width: calc(100% - 24px);
+        right: 12px;
+        left: 12px;
+    }
+
+}
+
+
+/* --- Presets --- */
+.presets-body {
+    padding: 12px 16px;
+}
+
+.preset-save-row {
+    display: flex;
+    gap: 6px;
+}
+
+.preset-save-row input {
+    flex: 1;
+    min-width: 0;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #fff;
+    font-size: 13px;
+}
+
+.preset-save-row input:focus {
+    outline: none;
+    border-color: #ffda44;
+}
+
+.preset-save-row button {
+    background: #ffda44;
+    border: none;
+    color: #111;
+    font-weight: 600;
+    padding: 0 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+#preset-message {
+    min-height: 14px;
+    margin-top: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #2ecc71;
+}
+
+#preset-message.error {
+    color: #ff5252;
+}
+
+.preset-list {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.preset-list li {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.preset-load {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    color: #e5e7eb;
+    padding: 6px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.preset-load:hover {
+    border-color: #ffda44;
+    color: #fff;
+}
+
+.preset-delete {
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 18px;
+    line-height: 1;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+.preset-delete:hover {
+    color: #ff5252;
+}
+
+.preset-empty {
+    color: #888;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.preset-save-row button:focus-visible,
+.preset-load:focus-visible,
+.preset-delete:focus-visible {
+    outline: 2px solid #ffda44;
+    outline-offset: 2px;
+}
+
+/* --- Right-click menu & tools bar --- */
+.map-context-menu[hidden],
+.tools-bar[hidden],
+.tools-bar [hidden] {
+    display: none !important;
+}
+
+.map-context-menu {
+    position: fixed;
+    z-index: 2000;
+    min-width: 220px;
+    padding: 6px 0;
+    background: rgba(26, 30, 38, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    color: #f3f4f6;
+}
+
+.map-context-menu hr {
+    border: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 4px 0;
+}
+
+.map-context-menu button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: #e5e7eb;
+    font: inherit;
+    font-size: 13px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.map-context-menu button:hover,
+.map-context-menu button:focus-visible {
+    background: rgba(255, 218, 68, 0.12);
+    color: #fff;
+    outline: none;
+}
+
+.map-context-menu .ctx-coords {
+    color: #ffda44;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.tools-bar {
+    position: absolute;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 12px;
+    max-width: calc(100% - 24px);
+    box-sizing: border-box;
+    padding: 8px 8px 8px 16px;
+    background: rgba(26, 30, 38, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    color: #f3f4f6;
+    font-size: 13px;
+}
+
+.tools-bar button {
+    border: none;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#tools-clear {
+    background: #ffda44;
+    color: #111;
+}
+
+#tools-done {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+.tools-bar button:focus-visible {
+    outline: 2px solid #ffda44;
+    outline-offset: 2px;
+}
+
+#map.measuring,
+#map.measuring .leaflet-interactive,
+#map.measuring.leaflet-grab {
+    cursor: crosshair !important;
+}
+
+.leaflet-interactive.tool-line {
+    cursor: default;
+}
+
+.leaflet-tooltip.measure-label {
+    background: #1a1e26;
+    color: #fff;
+    border: none;
+    box-shadow: none;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+}
+
+.leaflet-tooltip-top.measure-label::before {
+    border-top-color: #1a1e26;
+}
