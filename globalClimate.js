@@ -130,8 +130,10 @@ function handleControlInput(e) {
             toggle.checked = target.checked;
         });
         if (subContainer) {
-            subContainer.classList.toggle('disabled-opacity', !target.checked);
-            subContainer.classList.remove('dimmed-opacity');
+            // Dim only (never 'disabled-opacity', which blocks clicks) so the
+            // individual toggles stay clickable after "deselect all".
+            subContainer.classList.remove('disabled-opacity');
+            subContainer.classList.toggle('dimmed-opacity', !target.checked);
         }
     }
 
